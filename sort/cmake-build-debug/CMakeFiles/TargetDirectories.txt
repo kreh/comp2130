@@ -1,0 +1,3 @@
+F:/dev/school/comp2130/sort/cmake-build-debug/CMakeFiles/sort.dir
+F:/dev/school/comp2130/sort/cmake-build-debug/CMakeFiles/edit_cache.dir
+F:/dev/school/comp2130/sort/cmake-build-debug/CMakeFiles/rebuild_cache.dir
