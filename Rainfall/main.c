@@ -8,87 +8,80 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <mem.h>
+#include <stdbool.h>
+#include <malloc.h>
+#include "rainfall_header.h"
 
-#pragma clang diagnostic push
-#pragma clang diagnostic pop
-#pragma clang diagnostic ignored "-Wformat"
-#pragma clang diagnostic ignored "-Wunused-value"
-#pragma clang diagnostic ignored "-Wint-conversion"
+bool flag;
+char months[6][9] = {"January", "February", "March", "April", "May",
+                     "June"}; // [6] is months len, [9] is for max allowed char alloc
+double arrLastYear[6] = {3.1, 4.7, 4.2, 5.0, 4.0, 6.3};
+double arrCurrentYear[6] = {5.4, 4.4, 4.1, 3.0, 5.6, 4.5};
+double totalLastRainfall, totalCurrentRainfall, highestCurrentRainfall, lowestCurrentRainfall, delta, highestRainfall;
+int iPtr;
+int *ptr = &iPtr;
+int hiPtr;
 
-// [6] is months len, [9] is for max allowed char alloc
-char months[6][9] = {"January", "February", "March", "April", "May", "June"};
-double tCurRainfall, tNewRainfall, hNewRainfall, lNewRainfall, delta, highest;
-double arrCur[6] = {3.1, 4.7, 4.2, 5.0, 4.0, 6.3};
-double arrNew[6] = {5.4, 4.4, 4.1, 3.0, 5.6, 4.5};
-int iPtr = INIT;
-
-char displayYc(int adapter) {
-    char *token = token;
-    token = getSymbol(iPtr);
-
-    for (int xNumRep = 0; xNumRep <= adapter; xNumRep++) {
-        char *temp = token;
-        token = *temp;
-    }
-    return token;
+void arrayCheck() {
+    double *table[2];
+    double *x = table[0] = (double *) &arrLastYear;
+    double *y = table[1] = (double *) &arrCurrentYear;
+    flag = (*ptr == *x) ? true : false; // true = using last year; false = using current year
 }
 
-char getSymbol(int index) {
+void *displayYc(int fromAdapt) {
+    int length = (fromAdapt + 1);
+    char token = getSymbol(iPtr);
+    char *space = malloc(length);
+    return memset(space, token, length);
+}
+
+char getSymbol() {
     char sender;
-    if (index = arrCur[index])
-        sender = '*';
+    if (flag == true)
+        sender = '\x2A';
     else
-        sender = '!';
+        sender = '\x21';
     return sender;
 }
 
-double calcHiLo(double E, double *A) {
-    double hi, delta;
+double calcTotal(double A, double *B) {
     double final;
 
-
     for (int i = 0; i < 6; i++) {
-        double x = (final += A[i]);
-        if ((E = tCurRainfall) && (A = arrCur) && (i < 6)) { // Total normal rainfall
+        double x = final += B[i];
+        if ((A = totalLastRainfall) && (B = arrCurrentYear) && (i < 6)) { // Total current rainfall
             x;
-            break;
-        } else if ((E = tNewRainfall) && (A = arrNew) && (i < 6)) { // Total rainfall for 2018
+        } else if ((A = totalCurrentRainfall) && (B = arrLastYear) && (i < 6)) { // Total rainfall for 2018
             x;
-            break;
         }
     }
     return final;
 }
 
-double calcDelta(double E, double *A, double *B) {
-    double hi, lo, delta;
-    double final;
+// Current vs New delta calculation
+double calcDelta(double A) {
+    double hi, lo, diff, temp;
+    double *B = arrCurrentYear, *C = arrLastYear;
 
+    // Just in case if B and C are flipped around
     for (int i = 0; i < 6; i++) {
-        double lo, hi, final, temp;
-
-        if ((E = delta) && (A = arrCur) && (B = arrNew) && (i < 6)) {  // 2018 drier than norma
-
-            if (i == 0) {
-                lo = A[i];
-                break;
-            } else if (i == 1) {
-                hi = B[i];
-            }
-
-            while ((i < 6) && (i != 0)) {
-                if (lo > hi) {
-                    temp = lo;
-                    lo = hi;
-                    hi = temp;
-                    iPtr = i;
-                }
-            }
-            highest = hi;
-            delta = ((B[i] - A[i]));
+        if (i == 0) {
+            lo = B[i];
+        } else if (i == 1) {
+            hi = C[i];
         }
-    }
-    return delta;
+        while ((i < 6) && (i > 1)) { // bubble sort with hiPtr
+            if (lo > hi) {
+                temp = lo;
+                lo = hi;
+                hi = temp;
+            }
+        }
+        diff = (hi - lo);
+        hiPtr = hi;
+        return diff;
 }
 
 int adapt(double E) {
@@ -98,22 +91,32 @@ int adapt(double E) {
 }
 
 void run() {
+    char *lyd;
+    char *cyd;
+    delta = calcDelta(delta, arrLastYear, arrCurrentYear);
+
+    puts("");
     for (int i = 0; i < 6; i++) {
-        printf("%.1f %7.1f %7s %s %s", arrCur[i], arrNew[i], "* ", months[i], "data\n");
+        printf("%.1f %7.1f %7s %s %s", arrLastYear[i], arrCurrentYear[i], "* ", months[i], "data\n");
+    }
+    puts("\nRainfall comparison for January to June 2018\n");
+    for (int iPtr = 0; iPtr < 6; iPtr++) {
+        lyd = displayYc(adapt(arrLastYear[iPtr]));
+        cyd = displayYc(adapt(arrCurrentYear[iPtr]));
+        printf("%-8s %8s%s\n %16s%s\n %16s%s\n", months[iPtr], "|", lyd, "|", cyd, "|",
+               ""); // displayYc = display Y co-ordinates
+        if (iPtr == 5)
+            printf("%-8s %8s%s\n %16s%s\n %16s%s\n", months[iPtr], "|", lyd, "|", cyd, "|", SCALE);
     }
 
-    puts("\nRainfall comparison for January to June 2018");
-    for (int iPtr = 0; iPtr < 6; iPtr++) {
-        // displayYc = display Y co-ordinates
-        printf("%-8s |%s\n |%s\n |%s\n", months[iPtr], displayYc(adapt(arrCur[iPtr])), displayYc(adapt(arrNew[iPtr])));
-    }
     puts(LEGEND);
 
-    printf("Total normal rainfall was %.1f mm.\n\nTotal rainfall for 2018 was %.1f mm.\n\n", tCurRainfall,
-           tNewRainfall);
+    printf("Total normal rainfall was %.1f mm.\n\nTotal rainfall for 2018 was %.1f mm.\n\n",
+           calcTotal(totalLastRainfall, arrLastYear),
+           calcTotal(totalCurrentRainfall, arrCurrentYear));
     printf("2018 was a drier year than normal by %.1f mm.", delta);
 
-    printf("\n\nThe month with the highest rainfall was %s", months[iPtr]);
+    printf("\n\nThe month with the highest rainfall was %s", months[hiPtr]);
 }
 
 int main() {
