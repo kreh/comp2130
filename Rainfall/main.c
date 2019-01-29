@@ -8,39 +8,16 @@
 
 #include "rainfall_header.h"
 
-bool flag;
 char months[6][9] = {"January", "February", "March", "April", "May",
                      "June"}; // [6] is months len, [9] is for max allowed char alloc
-double arrLastYear[6] = {3.1, 4.7, 4.2, 5.0, 4.0, 6.3};
 double arrCurrentYear[6] = {5.4, 4.4, 4.1, 3.0, 5.6, 4.5};
-double totalLastRainfall, totalCurrentRainfall, highestCurrentRainfall, lowestCurrentRainfall, delta, highestRainfall;
+double arrLastYear[6] = {3.1, 4.7, 4.2, 5.0, 4.0, 6.3};
 int iPtr;
-int *ptr = &iPtr;
-int hiPtr;
 
 char *displayYc(int fromAdapt, char token) {
     char *space = malloc(fromAdapt + 1);
     space = memset(space, token, fromAdapt);
     return space;
-}
-
-char getSymbol() {
-    char sender;
-    if (flag == true)
-        sender = '!';
-    else
-        sender = '*';
-    return sender;
-}
-
-// grand total?
-double calcTotal(double A[]) {
-    double final = 0.0;
-
-    for (int i = 0; i < 6; i++) {
-        final += A[i];
-    }
-    return final;
 }
 
 // Current vs New delta calculation
@@ -50,29 +27,34 @@ double calcDelta() {
     return currentYear - lastYear;
 }
 
-int getHighestMonth() {
-    int index;
-    double highest = 0.0;
+double calcTotal(double A[]) {
+    double final = 0.0;
 
     for (int i = 0; i < 6; i++) {
-        double temp;
-        double a = arrCurrentYear[i];
-        double b = arrLastYear[i];
-
-        temp = (a > b) ? a : b;
-
-        if (temp > highest) {
-            highest = temp;
-            index = i;
-        }
+        final += A[i];
     }
-    return index;
+    return final;
 }
 
 int adapt(double E) {
     double i = ceil(E / 8 * 40);
     int o = i;
     return o;
+}
+
+int getHighestMonth() {
+    int index;
+    double highest = 0.0;
+
+    for (int i = 0; i < 6; i++) {
+        double temp = arrCurrentYear[i];;
+        if (temp > highest) {
+            highest = temp;
+            index = i;
+        }
+    }
+
+    return index;
 }
 
 void run() {
@@ -100,7 +82,7 @@ void run() {
            calcTotal(arrCurrentYear));
     printf("2018 was a drier year than normal by %.1f mm.", delta);
 
-    printf("\n\nThe month with the highest rainfall was %s\n", months[getHighestMonth()]);
+    printf("\n\nThe month with the highest rainfall was %s (2018)\n", months[getHighestMonth()]);
 }
 
 int main() {

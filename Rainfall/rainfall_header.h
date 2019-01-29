@@ -17,14 +17,9 @@
 
 char *displayYc(int fromAdapt, char token);
 
-char getSymbol();
+double calcDelta();
 
 double calcTotal(double A[]);
 
-double calcDelta();
-
 int adapt(double E);
 
-void generateGraphLayout();
-
-double *generateGraph(int *index);
