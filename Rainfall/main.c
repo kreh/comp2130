@@ -18,13 +18,6 @@ int iPtr;
 int *ptr = &iPtr;
 int hiPtr;
 
-void arrayCheck() {
-    double *table[2];
-    double *x = table[0] = (double *) &arrLastYear;
-    double *y = table[1] = (double *) &arrCurrentYear;
-    flag = (*ptr == *x) ? true : false; // true = using last year; false = using current year
-}
-
 char *displayYc(int fromAdapt, char token) {
     char *space = malloc(fromAdapt + 1);
     space = memset(space, token, fromAdapt);
