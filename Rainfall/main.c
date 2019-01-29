@@ -6,11 +6,6 @@
  * Program Description:  Assignment #2: Rainfall program with functions
  ****/
 
-#include <stdio.h>
-#include <math.h>
-#include <mem.h>
-#include <stdbool.h>
-#include <malloc.h>
 #include "rainfall_header.h"
 
 bool flag;
@@ -30,79 +25,75 @@ void arrayCheck() {
     flag = (*ptr == *x) ? true : false; // true = using last year; false = using current year
 }
 
-void *displayYc(int fromAdapt) {
-    int length = (fromAdapt + 1);
-    char token = getSymbol(iPtr);
-    char *space = malloc(length);
-    return memset(space, token, length);
+char *displayYc(int fromAdapt, char token) {
+    char *space = malloc(fromAdapt + 1);
+    space = memset(space, token, fromAdapt);
+    return space;
 }
 
 char getSymbol() {
     char sender;
     if (flag == true)
-        sender = '\x2A';
+        sender = '!';
     else
-        sender = '\x21';
+        sender = '*';
     return sender;
 }
 
-double calcTotal(double A, double *B) {
-    double final;
+// grand total?
+double calcTotal(double A[]) {
+    double final = 0.0;
 
     for (int i = 0; i < 6; i++) {
-        double x = final += B[i];
-        if ((A = totalLastRainfall) && (B = arrCurrentYear) && (i < 6)) { // Total current rainfall
-            x;
-        } else if ((A = totalCurrentRainfall) && (B = arrLastYear) && (i < 6)) { // Total rainfall for 2018
-            x;
-        }
+        final += A[i];
     }
     return final;
 }
 
 // Current vs New delta calculation
-double calcDelta(double A) {
-    double hi, lo, diff, temp;
-    double *B = arrCurrentYear, *C = arrLastYear;
+double calcDelta() {
+    double currentYear = calcTotal(arrCurrentYear);
+    double lastYear = calcTotal(arrLastYear);
+    return currentYear - lastYear;
+}
 
-    // Just in case if B and C are flipped around
+int getHighestMonth() {
+    int index;
+    double highest = 0.0;
+
     for (int i = 0; i < 6; i++) {
-        if (i == 0) {
-            lo = B[i];
-        } else if (i == 1) {
-            hi = C[i];
+        double temp;
+        double a = arrCurrentYear[i];
+        double b = arrLastYear[i];
+
+        temp = (a > b) ? a : b;
+
+        if (temp > highest) {
+            highest = temp;
+            index = i;
         }
-        while ((i < 6) && (i > 1)) { // bubble sort with hiPtr
-            if (lo > hi) {
-                temp = lo;
-                lo = hi;
-                hi = temp;
-            }
-        }
-        diff = (hi - lo);
-        hiPtr = hi;
-        return diff;
+    }
+    return index;
 }
 
 int adapt(double E) {
-    double i = ceil(E / 40 * 100);
+    double i = ceil(E / 8 * 40);
     int o = i;
     return o;
 }
 
 void run() {
-    char *lyd;
-    char *cyd;
-    delta = calcDelta(delta, arrLastYear, arrCurrentYear);
+    double delta = calcDelta();
+    delta = delta < 0 ? delta * -1 : delta;
 
-    puts("");
+    puts("\nRAINFALL ASSIGNMENT - DAVE ALDRICH - COMP 2130\n");
     for (int i = 0; i < 6; i++) {
         printf("%.1f %7.1f %7s %s %s", arrLastYear[i], arrCurrentYear[i], "* ", months[i], "data\n");
     }
     puts("\nRainfall comparison for January to June 2018\n");
     for (int iPtr = 0; iPtr < 6; iPtr++) {
-        lyd = displayYc(adapt(arrLastYear[iPtr]));
-        cyd = displayYc(adapt(arrCurrentYear[iPtr]));
+        char *lyd = displayYc(adapt(arrLastYear[iPtr]), '*');
+        char *cyd = displayYc(adapt(arrCurrentYear[iPtr]), '!');
         printf("%-8s %8s%s\n %16s%s\n %16s%s\n", months[iPtr], "|", lyd, "|", cyd, "|",
                ""); // displayYc = display Y co-ordinates
         if (iPtr == 5)
@@ -112,27 +103,14 @@ void run() {
     puts(LEGEND);
 
     printf("Total normal rainfall was %.1f mm.\n\nTotal rainfall for 2018 was %.1f mm.\n\n",
-           calcTotal(totalLastRainfall, arrLastYear),
-           calcTotal(totalCurrentRainfall, arrCurrentYear));
+           calcTotal(arrLastYear),
+           calcTotal(arrCurrentYear));
     printf("2018 was a drier year than normal by %.1f mm.", delta);
 
-    printf("\n\nThe month with the highest rainfall was %s", months[hiPtr]);
+    printf("\n\nThe month with the highest rainfall was %s\n", months[getHighestMonth()]);
 }
 
 int main() {
     run();
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
