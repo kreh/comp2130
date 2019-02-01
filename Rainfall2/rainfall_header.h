@@ -23,4 +23,6 @@ double calcTotal(double *A);
 
 int adapt(double E);
 
+char *data();
+
 

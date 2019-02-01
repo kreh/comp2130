@@ -18,7 +18,7 @@ char *window(char *text, int W, int H) {
     // width - (2 spaces + 2 pipes)
     int lineLength = W - 4;
     // text.length % lineLength
-    int textLines = (sizeof(text) / sizeof(char)) % lineLength;
+    int textLines = (sizeof(*text) / sizeof(char)) % lineLength;
     // height - lines of text - 2 bars
     int blankLines = H - textLines - 2;
 
@@ -43,6 +43,10 @@ char *window(char *text, int W, int H) {
     blankLine_ptr += W - 2;
     *blankLine_ptr++ = v_char;
     *blankLine_ptr++ = '\n';
+
+
+    size_t textLen = strlen(text) - 1;
+
 
     char *topLine = malloc(W + 1);
     char *topLine_ptr = topLine;
@@ -78,7 +82,21 @@ char *window(char *text, int W, int H) {
     }
 
     for (int i = 0; i < textLines; i++) {
-        // do something to centre and break the text nicely
+
+        *returnString_ptr++ = v_char;
+
+        returnString_ptr = memset(returnString_ptr, ' ', ((W - textLen) / 2) - 1);
+        returnString_ptr += (((W - textLen) / 2) - 1);
+
+        returnString_ptr = memcpy(returnString_ptr, text, textLen + 1);
+        returnString_ptr += textLen + 1;
+
+        returnString_ptr = memset(returnString_ptr, ' ', ((W - textLen) / 2) - 1);
+        returnString_ptr += (((W - textLen) / 2) - 1);
+
+        *returnString_ptr++ = v_char;
+        *returnString_ptr++ = '\n';
+
     }
 
     for (int i = 0; i < (blankLines / 2) + (blankLines % 2); i++) {
@@ -95,7 +113,8 @@ char *window(char *text, int W, int H) {
 
 int main(void) {
 
-    printf("%s", window("Hello World!", 100, 100));
+    printf("%s", window("Hello World!", 20, 10));
+
 
 }
 
@@ -149,7 +168,11 @@ int getHighestMonth() {
     return index;
 }
 
-void data() {
+char *data() {
+
+    char *sprintf_1_val = malloc(12345);
+    char *sprintf_1 = sprintf_1_val;
+
     double delta = calcDelta();
     delta = delta < 0 ? delta * -1 : delta;
 
@@ -169,10 +192,16 @@ void data() {
 
     puts(LEGEND);
 
-    printf("Total normal rainfall was %.1f mm.\n\nTotal rainfall for 2018 was %.1f mm.\n\n",
-           calcTotal(arrLastYear),
-           calcTotal(arrCurrentYear));
-    printf("2018 was a drier year than normal by %.1f mm.", delta);
+    sprintf(sprintf_1, "Total normal rainfall was %.1f mm.\n\nTotal rainfall for 2018 was %.1f mm.\n\n",
+            calcTotal(arrLastYear),
+            calcTotal(arrCurrentYear));
+    *sprintf_1 += *sprintf_1_val;
 
-    printf("\n\nThe month with the highest rainfall was %s (2018)\n", months[getHighestMonth()]);
+    sprintf(sprintf_1, "2018 was a drier year than normal by %.1f mm.", delta);
+    *sprintf_1 += *sprintf_1_val;
+
+    printf(sprintf_1, "\n\nThe month with the highest rainfall was %s (2018)\n", months[getHighestMonth()]);
+    *sprintf_1 += *sprintf_1_val;
+
+    free(sprintf_1);
 }

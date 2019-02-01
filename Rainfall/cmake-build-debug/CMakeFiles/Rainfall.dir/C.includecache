@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+F:/dev/school/comp2130/Rainfall/main.c
+rainfall_header.h
+F:/dev/school/comp2130/Rainfall/rainfall_header.h
+
+F:/dev/school/comp2130/Rainfall/rainfall_header.h
+stdio.h
+-
+string.h
+-
+stdlib.h
+-
+math.h
+-
+stdbool.h
+-
+
