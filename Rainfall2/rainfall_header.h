@@ -9,6 +9,7 @@
 #include <math.h>
 #include <stdbool.h>
 
+
 #ifndef LEGEND
 #define LEGEND "LEGEND:\n* - normal rainfall for a given month\n! - 2018 rainfall for a given month\n"
 #define SCALE "----1----2----3----4----5----6----7----8"
@@ -18,7 +19,8 @@ char *displayYc(int fromAdapt, char token);
 
 double calcDelta();
 
-double calcTotal(double A[]);
+double calcTotal(double *A);
 
 int adapt(double E);
+
 
